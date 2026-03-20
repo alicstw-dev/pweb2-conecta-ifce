@@ -1,4 +1,5 @@
-import Brand from './brand'
+import Brand from "@/components/shared/brand"
+
 
 function Footer() {
 	return (
