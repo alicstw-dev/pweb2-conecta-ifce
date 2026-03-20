@@ -4,9 +4,11 @@ import { Button } from './components/ui/button'
 function App() {
 	return (
 		<>
-			<Navbar />
-			<main>Conteúdo Principal</main>
-			<footer>Rodapé</footer>
+			<div className='flex flex-col min-h-svh'>
+				<Navbar />
+				<main className='flex-1'>Conteúdo Principal</main>
+				<footer>Rodapé</footer>
+			</div>
 		</>
 	)
 }
