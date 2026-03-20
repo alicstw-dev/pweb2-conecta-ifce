@@ -7,7 +7,7 @@ function Brand() {
 				<GraduationCap className="size-5 text-primary-foreground"/>
 			</div>
 			<span className="font-bold text-foreground text-lg">
-				Conecta <span className="text-primary">IFCE</span>
+				Conecta<span className="text-primary">IFCE</span>
 			</span>
 		</div>
 	)
