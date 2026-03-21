@@ -1,6 +1,6 @@
 
+import FormLogin from '@/features/auth/components/form-login'
 import Brand from '@/shared/components/brand'
-import { Button } from '@/shared/components/ui/button'
 import {
 	Card,
 	CardContent,
@@ -9,13 +9,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/shared/components/ui/card'
-import { Input } from '@/shared/components/ui/input'
-import { Label } from '@/shared/components/ui/label'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { useState } from 'react'
 
 function LoginPage() {
-	const [showPass, setShowPass] = useState<boolean>(false)
+
 	return (
 		<section className="flex-1 flex items-center justify-center py-20 ">
 			<Card className="max-w-md border-border w-md">
@@ -34,59 +30,8 @@ function LoginPage() {
 				</CardHeader>
 
 				<CardContent>
-					<form className="flex flex-col gap-4 ">
-						<div className="flex flex-col gap-2">
-							<Label htmlFor="email" className="text-foreground">
-								E-mail institucional
-							</Label>
-							<Input
-								id="email"
-								name="email"
-								type="email"
-								placeholder="seu.nome@ifce.edu.br"
-								required
-								className="h-11 bg-background"
-							/>
-						</div>
+					<FormLogin />
 
-						<div className="flex flex-col gap-2">
-							<div className="flex item-center justify-between">
-								<Label htmlFor="password" className="text-foreground">
-									Senha
-								</Label>
-								<a href="/recover" className="text-primary text-sm">
-									Esqueceu a senha?
-								</a>
-							</div>
-							<div className="relative">
-								<Input
-									id="password"
-									name="password"
-									type={showPass ? 'text' : 'password'}
-									placeholder="Digite sua senha"
-									required
-									className="h-11 bg-background"
-								></Input>
-
-								<button
-									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
-									type="button"
-									onClick={() => setShowPass((prev) => !prev)}
-								>
-									{showPass ? (
-										<EyeOffIcon className="size-4" />
-									) : (
-										<EyeIcon className="size-4" />
-									)}
-								</button>
-							</div>
-						</div>
-
-						<Button type="submit" className="mt-2 h-11">
-							{' '}
-							Entrar
-						</Button>
-					</form>
 				</CardContent>
 
 				<CardFooter className="border-t border-border ">
