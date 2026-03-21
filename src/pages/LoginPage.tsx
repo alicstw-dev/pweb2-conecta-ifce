@@ -1,5 +1,6 @@
-import Brand from '@/components/shared/brand'
-import { Button } from '@/components/ui/button'
+
+import Brand from '@/shared/components/brand'
+import { Button } from '@/shared/components/ui/button'
 import {
 	Card,
 	CardContent,
@@ -7,24 +8,21 @@ import {
 	CardFooter,
 	CardHeader,
 	CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/shared/components/ui/card'
+import { Input } from '@/shared/components/ui/input'
+import { Label } from '@/shared/components/ui/label'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useState } from 'react'
 
 function LoginPage() {
-
 	const [showPass, setShowPass] = useState<boolean>(false)
 	return (
 		<section className="flex-1 flex items-center justify-center py-20 ">
 			<Card className="max-w-md border-border w-md">
 				<CardHeader className="text-center">
-					<div className='w-full flex justify-center mb-4'>
+					<div className="w-full flex justify-center mb-4">
 						<Brand />
-
 					</div>
-
 
 					<CardTitle className="text-2xl font-bold text-foreground">
 						Bem-vindo de volta
@@ -64,7 +62,7 @@ function LoginPage() {
 								<Input
 									id="password"
 									name="password"
-									type={showPass ? "text": "password"}
+									type={showPass ? 'text' : 'password'}
 									placeholder="Digite sua senha"
 									required
 									className="h-11 bg-background"
@@ -73,10 +71,13 @@ function LoginPage() {
 								<button
 									className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary"
 									type="button"
-									onClick={() => setShowPass(prev => !prev)}
+									onClick={() => setShowPass((prev) => !prev)}
 								>
-									{showPass ? <EyeOffIcon className='size-4'/> : <EyeIcon className="size-4" />}
-
+									{showPass ? (
+										<EyeOffIcon className="size-4" />
+									) : (
+										<EyeIcon className="size-4" />
+									)}
 								</button>
 							</div>
 						</div>
@@ -88,7 +89,7 @@ function LoginPage() {
 					</form>
 				</CardContent>
 
-				<CardFooter className='border-t border-border '>
+				<CardFooter className="border-t border-border ">
 					<p className="text-sm text-muted-foreground text-center w-full">
 						Não tem conta?{' '}
 						<a href="/register" className="text-primary">

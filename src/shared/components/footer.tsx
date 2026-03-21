@@ -1,4 +1,5 @@
-import Brand from "@/components/shared/brand"
+
+import Brand from "@/shared/components/brand"
 import { Link } from "react-router"
 
 

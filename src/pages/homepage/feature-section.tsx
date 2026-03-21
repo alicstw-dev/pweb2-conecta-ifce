@@ -1,4 +1,4 @@
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/shared/components/ui/card'
 import { BookOpen, FolderSearch, Trophy, Users } from 'lucide-react'
 
 const features = [
@@ -30,7 +30,7 @@ const features = [
 
 function FeatureSection() {
 	return (
-		<section className="bg-background py-20 " id='feature-section'>
+		<section className="bg-background py-20 " id="feature-section">
 			<div className="container-main">
 				<div className="mx-auto text-center max-w-2xl">
 					<p className="text-primary uppercase tracking-wide font-semibold text-sm ">

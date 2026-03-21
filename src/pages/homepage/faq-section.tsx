@@ -1,5 +1,9 @@
-
-import {Accordion, AccordionItem, AccordionTrigger, AccordionContent} from '@/components/ui/accordion'
+import {
+	Accordion,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionContent,
+} from '@/shared/components/ui/accordion'
 
 const faq = [
 	{
@@ -31,7 +35,7 @@ const faq = [
 
 function FaqSection() {
 	return (
-		<section className="bg-card py-20" id='faq-section'>
+		<section className="bg-card py-20" id="faq-section">
 			<div className="container-main max-w-3xl">
 				<div className="mx-auto text-center">
 					<p className="text-primary uppercse text-sm font-semibold tracking-wide">
@@ -42,16 +46,15 @@ function FaqSection() {
 					</h2>
 				</div>
 
-				<Accordion type='single' collapsible className='w-full mt-16'>
+				<Accordion type="single" collapsible className="w-full mt-16">
 					{faq.map((item) => (
 						<AccordionItem key={item.question} value={item.question}>
-							<AccordionTrigger className='text-base font-medium text-foreground hover:text-primary'>
+							<AccordionTrigger className="text-base font-medium text-foreground hover:text-primary">
 								{item.question}
 							</AccordionTrigger>
 
-							<AccordionContent className='text-sm leading-relaxed text-muted-foreground'>
+							<AccordionContent className="text-sm leading-relaxed text-muted-foreground">
 								{item.answer}
-
 							</AccordionContent>
 						</AccordionItem>
 					))}
