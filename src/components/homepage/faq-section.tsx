@@ -31,7 +31,7 @@ const faq = [
 
 function FaqSection() {
 	return (
-		<section className="bg-card py-20">
+		<section className="bg-card py-20" id='faq-section'>
 			<div className="container-main max-w-3xl">
 				<div className="mx-auto text-center">
 					<p className="text-primary uppercse text-sm font-semibold tracking-wide">
