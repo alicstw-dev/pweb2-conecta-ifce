@@ -5,6 +5,7 @@ import { LoginSchema, type LoginFormData } from '@/features/auth/schemas/login.s
 import { useNavigate } from 'react-router'
 import { http } from '@/infra/http/http-client'
 import { setAccessToken } from '@/features/auth/storage/auth-storage'
+import { ApiError } from '@/infra/http/api-error'
 
 export function useFormLogin() {
 	const [showPass, setShowPass] = useState<boolean>(false)
@@ -30,8 +31,10 @@ export function useFormLogin() {
 			setAccessToken(responseData.token)
 			navigate('/feed')
 		} catch (error) {
+			if(error instanceof ApiError){
+				setAuthError(error.message)
+			}
 			console.error(error)
-			setAuthError(error instanceof Error ? error.message : 'Erro desconhecido')
 		}
 	}
 
