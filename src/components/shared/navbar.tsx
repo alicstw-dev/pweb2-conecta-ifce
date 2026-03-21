@@ -39,7 +39,7 @@ function Navbar() {
 					</Button>
 
 					<Button size="lg" asChild>
-						<a href="/login">Criar Conta</a>
+						<a href="/register">Criar Conta</a>
 					</Button>
 				</div>
 			</nav>
