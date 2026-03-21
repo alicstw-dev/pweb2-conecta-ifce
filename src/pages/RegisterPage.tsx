@@ -17,28 +17,73 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select'
-import { registerSchema } from '@/schemas/register.schema'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { useState } from 'react'
-import { ZodError } from 'zod'
+import {
+	registerSchema,
+	type RegisterFormData,
+} from '@/schemas/register.schema'
+import { EyeIcon, EyeOffIcon, Loader2Icon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useNavigate } from 'react-router'
 
 function RegisterPage() {
 	const [showPass, setShowPass] = useState<boolean>(false)
-	const handleSubmit = (event: React.SubmitEvent) => {
-		event.preventDefault()
-		const formData = new FormData(event.target)
+	const [campuses, setCampuses] = useState<
+		Array<{
+			id: string
+			name: string
+		}>
+	>([])
 
-		const data = {
-			firstName: formData.get('firstName'),
-			password: formData.get('password'),
-		}
-		try {
-			const validateData = registerSchema.parse(data)
-			console.log(validateData)
-		} catch (error) {
-			if (error instanceof ZodError) {
-				console.log(error)
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		async function fetchCampuses() {
+			const response = await fetch(
+				'https://conectaifce-api.proflucasmendes.com.br/campuses',
+			)
+
+			if (response.ok) {
+				const data = await response.json()
+				setCampuses(data)
 			}
+		}
+		fetchCampuses()
+	}, [])
+
+	const {
+		register,
+		handleSubmit,
+		reset,
+		control,
+		formState: { errors, isSubmitting, isValid },
+		watch,
+	} = useForm<RegisterFormData>({
+		resolver: zodResolver(registerSchema),
+		mode: 'onBlur',
+	})
+
+	const onSubmit = async (data: RegisterFormData) => {
+		const { course, ...rest } = data
+		const payload = data.role === 'student' ? data : rest
+
+		const response = await fetch(
+			'https://conectaifce-api.proflucasmendes.com.br/auth/register',
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
+			},
+		)
+
+		if (response.ok) {
+			const responseData = await response.json()
+			console.log(responseData)
+			localStorage.setItem('acess_token', responseData.token)
+			navigate('/feed')
 		}
 	}
 	return (
@@ -59,20 +104,28 @@ function RegisterPage() {
 				</CardHeader>
 
 				<CardContent>
-					<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+					<form
+						className="flex flex-col gap-4"
+						onSubmit={handleSubmit(onSubmit)}
+					>
 						<div className="flex items-center gap-4">
 							<div className="flex flex-col gap-2">
-								<Label htmlFor="firsName" className="text-foreground">
+								<Label htmlFor="firstName" className="text-foreground">
 									Nome
 								</Label>
 								<Input
 									id="firstName"
-									name="firstName"
 									type="text"
 									placeholder="Seu nome"
 									required
 									className="h-11 bg-background"
+									{...register('firstName')}
 								/>
+								{errors.firstName && (
+									<p className="text-xs text-destructive">
+										{errors.firstName.message}
+									</p>
+								)}
 							</div>
 
 							<div className="flex flex-col gap-2">
@@ -81,13 +134,37 @@ function RegisterPage() {
 								</Label>
 								<Input
 									id="lastName"
-									name="lastName"
 									type="text"
 									placeholder="Seu sobrenome"
+									{...register('lastName')}
 									// required
 									className="h-11 bg-background"
 								/>
+								{errors.lastName && (
+									<p className="text-xs text-destructive">
+										{errors.lastName.message}
+									</p>
+								)}
 							</div>
+						</div>
+
+						<div className="flex flex-col gap-2">
+							<Label htmlFor="handle" className="text-foreground">
+								Nome de usuário
+							</Label>
+							<Input
+								id="handle"
+								type="text"
+								placeholder="Seu nome de usuário"
+								required
+								className="h-11 bg-background"
+								{...register('handle')}
+							/>
+							{errors.handle && (
+								<p className="text-xs text-destructive">
+									{errors.handle.message}
+								</p>
+							)}
 						</div>
 
 						<div className="flex flex-col gap-2">
@@ -96,85 +173,109 @@ function RegisterPage() {
 							</Label>
 							<Input
 								id="email"
-								name="email"
 								type="email"
 								placeholder="seu.nome@ifce.edu.br"
 								// required
+								{...register('email')}
 								className="h-11 bg-background"
 							/>
+							{errors.email && (
+								<p className="text-xs text-destructive">
+									{errors.email.message}
+								</p>
+							)}
 						</div>
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="role" className="text-foreground">
 								Vínculo
 							</Label>
-							<Select>
-								<SelectTrigger className="bg-background w-full h-11" id="role">
-									<SelectValue placeholder="Selecione seu vínculo com o IFCE"></SelectValue>
-								</SelectTrigger>
+							<Controller
+								name="role"
+								control={control}
+								render={({ field }) => (
+									<Select
+										onValueChange={field.onChange}
+										value={field.value ?? ''}
+									>
+										<SelectTrigger
+											className="bg-background w-full h-11"
+											id="role"
+										>
+											<SelectValue placeholder="Selecione seu vínculo com o IFCE"></SelectValue>
+										</SelectTrigger>
 
-								<SelectContent>
-									<SelectItem value="student">Estudante</SelectItem>
-									<SelectItem value="professor">Docente</SelectItem>
-									<SelectItem value="techniciam">Técnico(a)</SelectItem>
-								</SelectContent>
-							</Select>
+										<SelectContent>
+											<SelectItem value="student">Estudante</SelectItem>
+											<SelectItem value="professor">Docente</SelectItem>
+											<SelectItem value="techniciam">Técnico(a)</SelectItem>
+										</SelectContent>
+									</Select>
+								)}
+							/>
+							{errors.role && (
+								<p className="text-xs text-destructive">
+									{errors.role.message}
+								</p>
+							)}
 						</div>
 
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="campus" className="text-foreground">
 								Campus
 							</Label>
-							<Select>
-								<SelectTrigger
-									className="bg-background w-full h-11"
-									id="campus"
-								>
-									<SelectValue placeholder="Selecione seu Campus do IFCE"></SelectValue>
-								</SelectTrigger>
+							<Controller
+								name="campus"
+								control={control}
+								render={({ field }) => (
+									<Select
+										onValueChange={field.onChange}
+										value={field.value ?? ''}
+									>
+										<SelectTrigger
+											className="bg-background w-full h-11"
+											id="campus"
+										>
+											<SelectValue placeholder="Selecione seu Campus do IFCE"></SelectValue>
+										</SelectTrigger>
 
-								<SelectContent>
-									<SelectItem value="acarau">Acaraú</SelectItem>
-									<SelectItem value="acopiara">Acopiara</SelectItem>
-									<SelectItem value="aracati">Aracati</SelectItem>
-									<SelectItem value="baturite">Baturité</SelectItem>
-									<SelectItem value="boa_viagem">Boa Viagem</SelectItem>
-									<SelectItem value="camocim">Camocim</SelectItem>
-									<SelectItem value="caninde">Canindé</SelectItem>
-									<SelectItem value="caucaia">Caucaia</SelectItem>
-									<SelectItem value="cedro">Cedro</SelectItem>
-									<SelectItem value="crateus">Crateús</SelectItem>
-									<SelectItem value="crato">Crato</SelectItem>
-									<SelectItem value="fortaleza">Fortaleza</SelectItem>
-									<SelectItem value="guaramiranga">Guaramiranga</SelectItem>
-									<SelectItem value="horizonte">Horizonte</SelectItem>
-									<SelectItem value="iguatu">Iguatu</SelectItem>
-									<SelectItem value="itapipoca">Itapipoca</SelectItem>
-									<SelectItem value="jaguaribe">Jaguaribe</SelectItem>
-									<SelectItem value="jaguaruana">Jaguaruana</SelectItem>
-									<SelectItem value="juazeiro_do_norte">
-										Juazeiro do Norte
-									</SelectItem>
-									<SelectItem value="limoeiro_do_norte">
-										Limoeiro do Norte
-									</SelectItem>
-									<SelectItem value="maracanau">Maracanaú</SelectItem>
-									<SelectItem value="maranguape">Maranguape</SelectItem>
-									<SelectItem value="mombaca">Mombaça</SelectItem>
-									<SelectItem value="morada_nova">Morada Nova</SelectItem>
-									<SelectItem value="paracuru">Paracuru</SelectItem>
-									<SelectItem value="pecem">Pecém</SelectItem>
-									<SelectItem value="quixada">Quixadá</SelectItem>
-									<SelectItem value="sobral">Sobral</SelectItem>
-									<SelectItem value="tabuleiro_do_norte">
-										Tabuleiro do Norte
-									</SelectItem>
-									<SelectItem value="taua">Tauá</SelectItem>
-									<SelectItem value="tiangua">Tianguá</SelectItem>
-									<SelectItem value="ubajara">Ubajara</SelectItem>
-									<SelectItem value="umirim">Umirim</SelectItem>
-								</SelectContent>
-							</Select>
+										<SelectContent>
+											{campuses &&
+												campuses.map((campus) => (
+													<SelectItem value={campus.id} key={campus.id}>
+														{campus.name}{' '}
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+								)}
+							/>
+							{errors.campus && (
+								<p className="text-xs text-destructive">
+									{errors.campus.message}
+								</p>
+							)}
 						</div>
+
+						{watch('role') === 'student' && (
+							<div className="flex flex-col gap-2">
+								<Label htmlFor="course" className="text-foreground">
+									Curso
+								</Label>
+								<Input
+									id="course"
+									type="text"
+									placeholder="Seu curso"
+									required
+									className="h-11 bg-background"
+									{...register('course')}
+								/>
+								{errors.course && (
+									<p className="text-xs text-destructive">
+										{errors.course.message}
+									</p>
+								)}
+							</div>
+						)}
 
 						<div className="flex flex-col gap-2">
 							<Label htmlFor="password" className="text-foreground">
@@ -184,11 +285,11 @@ function RegisterPage() {
 							<div className="relative">
 								<Input
 									id="password"
-									name="password"
 									type={showPass ? 'text' : 'password'}
 									placeholder="Digite sua senha"
 									required
 									className="h-11 bg-background"
+									{...register('password')}
 								></Input>
 
 								<button
@@ -203,15 +304,30 @@ function RegisterPage() {
 									)}
 								</button>
 							</div>
+							{errors.password && (
+								<p className="text-xs text-destructive">
+									{errors.password.message}
+								</p>
+							)}
 
 							<p className="text-xs text-muted-foreground">
 								Mínimo de 8 caracteres com letras e números
 							</p>
 						</div>
 
-						<Button type="submit" className="mt-2 h-11">
-							{' '}
-							Criar conta
+						<Button
+							type="submit"
+							className="mt-2 h-11"
+							disabled={isSubmitting || !isValid}
+						>
+							{isSubmitting ? (
+								<span className="flex items-center gap-4">
+									<Loader2Icon className="size-4 animate-spin" />{' '}
+									<span>Criando conta...</span>
+								</span>
+							) : (
+								'Criar conta'
+							)}
 						</Button>
 					</form>
 				</CardContent>
