@@ -6,13 +6,12 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router'
-import { http } from '@/infra/http/http-client'
-import { setAccessToken } from '@/features/auth/storage/auth-storage'
 import { ApiError } from '@/infra/http/api-error'
 import {
 	getCampuses,
 	registerUser,
 } from '@/features/auth/services/register.service'
+import { useAuth } from '@/features/auth/contexts/AuthContext'
 
 export function useFormRegister() {
 	const [showPass, setShowPass] = useState<boolean>(false)
@@ -25,6 +24,7 @@ export function useFormRegister() {
 	>([])
 
 	const navigate = useNavigate()
+	const {setAuthUser} = useAuth()
 
 	useEffect(() => {
 		async function fetchCampuses() {
@@ -53,10 +53,11 @@ export function useFormRegister() {
 
 	const onSubmit = async (data: RegisterFormData) => {
 		const { course, ...rest } = data
-		const payload = data.role === 'student' ? data : rest
+		const payload = data.role === 'STUDENT' ? data : rest
 
 		try {
-			registerUser(payload)
+			const responseData = await registerUser(payload)
+			setAuthUser(responseData.user)
 			navigate('/feed')
 		} catch (error) {
 			console.error(error)
