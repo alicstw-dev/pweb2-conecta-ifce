@@ -1,0 +1,34 @@
+
+import { UseAvatar } from '@/features/users/components/useAvatar'
+import {
+	Avatar,
+	AvatarBadge,
+	AvatarFallback,
+	AvatarImage,
+} from '@/shared/components/ui/avatar'
+
+function UserAvatar({
+	avatarUrl,
+	firstName,
+	lastName,
+	size,
+}: {
+	avatarUrl: string | undefined,
+	firstName: string | undefined,
+	lastName: string | undefined,
+	size: 'default' | 'sm' | 'lg' | undefined
+}) {
+
+	const {getInitials} = UseAvatar(firstName, lastName)
+	const initials = getInitials()
+	return (
+		<Avatar size={size}>
+			<AvatarImage src={avatarUrl} />
+			<AvatarFallback className="bg-primary/20 text-primary border border-primary/50">
+				{initials}
+			</AvatarFallback>
+		</Avatar>
+	)
+}
+
+export default UserAvatar
