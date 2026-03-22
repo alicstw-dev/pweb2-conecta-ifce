@@ -16,7 +16,7 @@ export type UserDomain = {
 		name: string
 	}
 	course?: string | undefined
-	states:{
+	stats:{
 		followersCount: number
 		followingCount: number
 		postsCount:number

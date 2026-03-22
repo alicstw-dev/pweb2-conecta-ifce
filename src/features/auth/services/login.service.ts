@@ -1,6 +1,9 @@
-import { clearAcessToken, setAccessToken } from '@/features/auth/storages/token.storage'
+import {
+	clearAcessToken,
+	setAccessToken,
+} from '@/features/auth/storages/token.storage'
 import { http } from '@/infra/http/http-client'
-import type { UserResponseDTO } from '@/features/auth/types/dto/auth-dto'
+import type { UserResponseDTO } from '@/features/auth/types/dto/AuthDTO'
 
 export async function login(
 	email: string,
@@ -15,7 +18,6 @@ export async function login(
 	return responseData
 }
 
-export function logout(): void{
+export function logout(): void {
 	clearAcessToken()
-
 }

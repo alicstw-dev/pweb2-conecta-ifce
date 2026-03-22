@@ -1,5 +1,9 @@
-import { clearStoredUSer, getStoredUSer, setStoredUser } from '@/features/auth/storages/authUser.storage'
-import type { AuthUser } from '@/features/auth/types/dto/auth-dto'
+import {
+	clearStoredUSer,
+	getStoredUSer,
+	setStoredUser,
+} from '@/features/auth/storages/authUser.storage'
+import type { AuthUser } from '@/features/auth/types/dto/AuthDTO'
 import { createContext, useContext, useState, type ReactNode } from 'react'
 
 // context type
@@ -18,17 +22,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [authUser, setAuthUser] = useState<AuthUser | null>(() =>
 		getStoredUSer(),
 	)
-	function setUser(user: AuthUser){
+	function setUser(user: AuthUser) {
 		setStoredUser(user)
 		setAuthUser(user)
-
 	}
 
-	function clearUser(){
+	function clearUser() {
 		clearStoredUSer()
 		setAuthUser(null)
 	}
-
 
 	return (
 		<AuthContext
@@ -36,8 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				isAuthenticated: authUser !== null,
 				authUser,
 				setAuthUser: setUser,
-				clearAuthUser: clearUser
-
+				clearAuthUser: clearUser,
 			}}
 		>
 			{children}
@@ -47,11 +48,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 //custom hook
 
-export function useAuth(): AuthContextType{
+export function useAuth(): AuthContextType {
 	const context = useContext(AuthContext)
 
-	if(!context) {
-		throw Error('O contexto de autenticação não pode ser acessado fora do AuthProvider')
+	if (!context) {
+		throw Error(
+			'O contexto de autenticação não pode ser acessado fora do AuthProvider',
+		)
 	}
 	return context
 }
