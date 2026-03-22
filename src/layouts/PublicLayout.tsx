@@ -1,10 +1,15 @@
-import Footer from "@/shared/components/footer"
-import Navbar from "@/shared/components/navbar"
-import useScroll from "@/shared/hooks/useScrol"
-import { Outlet } from "react-router"
-
+import { useAuth } from '@/features/auth/contexts/AuthContext'
+import Footer from '@/shared/components/footer'
+import Navbar from '@/shared/components/navbar'
+import useScroll from '@/shared/hooks/useScrol'
+import { Navigate, Outlet } from 'react-router'
 
 function PublicLayout() {
+	const { isAuthenticated } = useAuth()
+
+	if (isAuthenticated) {
+		return <Navigate to="/feed" replace />
+	}
 	useScroll()
 	return (
 		<>
