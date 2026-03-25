@@ -2,7 +2,6 @@
 import { UseAvatar } from '@/features/users/components/useAvatar'
 import {
 	Avatar,
-	AvatarBadge,
 	AvatarFallback,
 	AvatarImage,
 } from '@/shared/components/ui/avatar'

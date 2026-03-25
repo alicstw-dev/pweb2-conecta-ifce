@@ -1,4 +1,3 @@
-import type { UserDomain } from '@/features/users/types/UserDomain'
 
 export function UseAvatar(firstName?: string, lastName?: string) {
 	const getInitials = (): string => {
